@@ -9,10 +9,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch()
 indexName = "TODO_ENTER_NAME"
 
-for dirpath, dirnames, filenames in os.walk(r"D:\DMT\yelp_dataset_challenge_academic_dataset"):
-    allFiles = [os.path.join(dirpath, filename) for filename in filenames]
-
-with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_business.json") as businessFile:
+with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_business.json") as businessFile:
     for line in businessFile.read().split("\n"):
         line = line.__str__()
         lineJson = json.loads(line)
@@ -28,7 +25,7 @@ with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset
 
     businessFile.close()
 
-with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_checkin.json") as checkinFile:
+with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_checkin.json") as checkinFile:
     for line in checkinFile.read().split("\n"):
         line = line.__str__()
         lineJson = json.loads(line)
@@ -45,7 +42,7 @@ with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset
     checkinFile.close()
 
 
-with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_review.json") as reviewFile:
+with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_review.json") as reviewFile:
     for line in reviewFile.read().split("\n"):
         line = line.__str__()
         lineJson = json.loads(line)
@@ -64,7 +61,7 @@ with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset
 
     reviewFile.close()
 
-with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_tip.json") as tipFile:
+with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_tip.json") as tipFile:
     for line in tipFile.read().split("\n"):
         line = line.__str__()
         lineJson = json.loads(line)
@@ -81,7 +78,7 @@ with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset
 
     tipFile.close()
 
-with open(r"D:\DMT\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_user.json") as userFile:
+with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_user.json") as userFile:
     for line in userFile.read().split("\n"):
         line = line.__str__()
         lineJson = json.loads(line)
