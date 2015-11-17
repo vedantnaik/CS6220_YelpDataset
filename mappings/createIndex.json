@@ -1,0 +1,49 @@
+{
+  "settings": {
+    "number_of_shards": 3,
+    "refresh_interval": "-1",
+    "compress.default.type": "snappy",
+    "index.store.compress.stored": true,
+    "index.store.compress.tv": true,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "stopRemoveTVAlive": {
+          "type": "english",
+          "stopwords_path": ""
+        }
+      }
+    }
+  },
+  "mappings": {
+    "tip": {
+      "_all": {
+        "enabled": false,
+        "norms": {
+          "enabled": false
+        }
+      },
+      "properties": {
+        "text": {
+          "type": "string",
+          "store": "true",
+          "term_vector": "with_positions",
+          "analyzer": "stopRemoveTVAlive",
+          "index": "analyzed"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "business_id": {
+          "type": "string"
+        },
+        "date": {
+          "type": "date"
+        },
+        "like": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

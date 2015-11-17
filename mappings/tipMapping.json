@@ -1,0 +1,22 @@
+{
+  "properties": {
+    "text": {
+      "type": "string",
+      "norms": {
+        "enabled": false
+      }
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "business_id": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date"
+    },
+    "like": {
+      "type": "integer"
+    }
+  }
+}
