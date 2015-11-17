@@ -1,8 +1,6 @@
 __author__ = 'Vedant Naik, Dixit_Patel, Akshay_Raje'
 
-
 import json
-
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch()
@@ -13,6 +11,7 @@ indexName = "yelp"
 with open(r'mappings\createIndex.json') as createIndex:
     data = json.load(createIndex)
 # print(data)
+es.indices.create(index='yelp', body=data, ignore=400)
 
 with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_business.json") as businessFile:
     for line in businessFile.read().split("\n"):
