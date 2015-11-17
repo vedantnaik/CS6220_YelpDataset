@@ -1,4 +1,4 @@
-__author__ = 'Vedant, Dixit_Patel, Akshay_Raje'
+__author__ = 'Vedant Naik, Dixit_Patel, Akshay_Raje'
 
 
 import json
