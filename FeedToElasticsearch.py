@@ -1,13 +1,18 @@
-__author__ = 'Vedant'
+__author__ = 'Vedant, Dixit_Patel, Akshay_Raje'
 
-import re
-import os
+
 import json
-from pprint import pprint
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch()
-indexName = "TODO_ENTER_NAME"
+indexName = "yelp"
+
+## put mappings and index creation
+
+with open(r'mappings\createIndex.json') as createIndex:
+    data = json.load(createIndex)
+# print(data)
 
 with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_business.json") as businessFile:
     for line in businessFile.read().split("\n"):
