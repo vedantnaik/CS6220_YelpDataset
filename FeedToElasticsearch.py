@@ -25,8 +25,7 @@ with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_busi
         es.index(index=indexName,
                  doc_type=type,
                  id= businessId,        # TODO: check if this is right for id
-                 body={"doc_no" : businessId,
-                       "text" : line})
+                 body=lineJson, timeout=30)
 
     businessFile.close()
 
@@ -41,8 +40,7 @@ with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_chec
         es.index(index=indexName,
                  doc_type=type,
                  id= businessId,        # TODO: check if this is right for id
-                 body={"doc_no" : businessId,
-                       "text" : line})
+                 body=lineJson, timeout=30)
 
     checkinFile.close()
 
@@ -61,8 +59,7 @@ with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_revi
         es.index(index=indexName,
                  doc_type=type,
                  id= businessId,        # TODO: check if this is right for id
-                 body={"doc_no" : businessId,   # TODO: reviewID or businessID
-                       "text" : line})
+                 body=lineJson, timeout=30) # TODO: reviewID or businessID
 
     reviewFile.close()
 
@@ -78,8 +75,8 @@ with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_tip.
         es.index(index=indexName,
                  doc_type=type,
                  id= businessId,        # TODO: check if this is right for id
-                 body={"doc_no" : businessId,   # TODO: reviewID or businessID
-                       "text" : line})
+                 body=lineJson, timeout=30) # TODO: reviewID or businessID
+
 
     tipFile.close()
 
@@ -94,6 +91,6 @@ with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_user
         es.index(index=indexName,
                  doc_type=type,
                  id= userId,        # TODO: check if this is right for id
-                 body={"doc_no" : userId,   # TODO: reviewID or businessID
-                       "text" : line})
+                 body=lineJson, timeout=30)   # TODO: reviewID or businessID
+
     userFile.close()
