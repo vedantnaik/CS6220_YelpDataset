@@ -11,7 +11,7 @@ indexName = "yelp"
 with open(r'mappings\createIndex.json') as createIndex:
     data = json.load(createIndex)
 # print(data)
-es.indices.create(index='yelp', body=data, ignore=400)
+es.indices.create(index=indexName, body=data, ignore=400)
 
 with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_business.json") as businessFile:
     for line in businessFile.read().split("\n"):
