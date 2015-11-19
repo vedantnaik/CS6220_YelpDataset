@@ -1,4 +1,5 @@
 __author__ = 'Vedant_Naik, Dixit_Patel, Akshay_Raje'
+
 import json
 from elasticsearch import Elasticsearch
 
