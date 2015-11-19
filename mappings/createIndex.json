@@ -1,7 +1,7 @@
 {
   "settings": {
     "number_of_shards": 3,
-    "refresh_interval": "-1",
+    "refresh_interval": "1s",
     "compress.default.type": "snappy",
     "index.store.compress.stored": true,
     "index.store.compress.tv": true,
@@ -38,10 +38,68 @@
           "type": "string"
         },
         "date": {
-          "type": "date"
+          "type": "date",
+          "format": "dateOptionalTime"
         },
-        "like": {
+        "likes": {
+          "type": "long"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "business": {
+      "_all": {
+        "enabled": false,
+        "norms": {
+          "enabled": false
+        }
+      },
+      "properties": {
+        "full_address": {
+          "type": "string",
+          "store": "true",
+          "term_vector": "with_positions",
+          "analyzer": "stopRemoveTVAlive",
+          "index": "analyzed"
+        },
+        "business_id": {
+          "type": "string"
+        },
+        "hours": {
+          "type": "nested"
+        },
+        "open": {
+          "type": "boolean"
+        },
+        "categories": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "city": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "review_count": {
           "type": "integer"
+        },
+        "name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "neighborhoods": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "location": {
+          "type": "geo_point"
+        },
+        "attributes": {
+          "type": "nested"
+        },
+        "type": {
+          "type": "string"
         }
       }
     }
