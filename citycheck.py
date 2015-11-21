@@ -28,17 +28,33 @@ def makeFile(cityToConsider):
             city = lineJson.get("city")
 
             if businessIdDict.keys().__contains__(city):
-                businessIdDict[city].append(lineJson.get("business_id"))
+                businessIdDict[city].append((lineJson.get("business_id"), lineJson.get("categories")))
             else:
-                businessIdDict.update({city:[lineJson.get("business_id")]})
+                businessIdDict.update({city:[(lineJson.get("business_id"), lineJson.get("categories"))]})
 
-    for k in [k1 for k1 in businessIdDict.keys() if len(businessIdDict[k1]) >= 1000]:
-        print k, "-", len(businessIdDict[k])
+    for k in [k1 for k1 in businessIdDict.keys() if len(businessIdDict[k1]) > 100]:
+        print k, " has ", len(businessIdDict[k]), " businesses."
 
-    reviewDateDict = {}
-    bidsInOurCity = businessIdDict[cityToConsider]
+    """
+    Here we make a file for a give city which has a dict like so:
+        {bid: [categories]}
+
+    we also make a list of bids in our city
+    """
+    bidsInOurCity = []
+    bidCategoryDict = {}
+    for id, categories in businessIdDict[cityToConsider]:
+        bidsInOurCity.append(id)
+        bidCategoryDict.update({id:categories})
+
+    with open("myDataFiles\iBusinessCategoryDict_"+cityToConsider,'wb') as f:
+        print "making file"
+        cPickle.dump(bidCategoryDict, f)
+        f.close()
+    print "business file compelte"
+
     count = 0
-
+    reviewDateDict = {}
     with open(r".\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_review.json") as reviewFile:
         for line in [l for l in reviewFile.read().split("\n") if len(l) > 0]:
             line = line.__str__().decode("utf8")
@@ -58,7 +74,7 @@ def makeFile(cityToConsider):
             if bidsInOurCity.__contains__(bid):
                 count += 1
                 #print bid
-                # add the date of this review to a dict agaisnt bid
+                # add the date of this review to a dict against bid
                 if reviewDateDict.keys().__contains__(bid):
                     reviewDateDict[bid].append(rDate)
                 else:
@@ -66,7 +82,7 @@ def makeFile(cityToConsider):
 
     print count
 
-    with open(".\ireviewDateDict_"+cityToConsider,'wb') as f:
+    with open("myDataFiles\iReviewDateDict_"+cityToConsider,'wb') as f:
         print "making file"
         cPickle.dump(reviewDateDict, f)
         f.close()
@@ -80,7 +96,7 @@ def initYear(yyyy):
     return dict
 
 def workOnFile(cityToConsider):
-    with open(".\ireviewDateDict_"+cityToConsider,'rb') as f:
+    with open("myDataFiles\iReviewDateDict_"+cityToConsider,'rb') as f:
         print "reading from file"
         reviewDateDict = cPickle.load(f)
         count = 0
@@ -115,5 +131,6 @@ def workOnFile(cityToConsider):
 
 if __name__ == '__main__':
     cityToConsider = "Las Vegas"
-    # makeFile(cityToConsider)
+    makeFile(cityToConsider)
     workOnFile(cityToConsider)
+    
