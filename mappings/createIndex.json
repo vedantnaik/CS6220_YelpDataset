@@ -1,107 +1,159 @@
 {
-  "settings": {
-    "number_of_shards": 3,
-    "refresh_interval": "1s",
-    "compress.default.type": "snappy",
-    "index.store.compress.stored": true,
-    "index.store.compress.tv": true,
-    "number_of_replicas": 1,
-    "analysis": {
-      "analyzer": {
-        "stopRemoveTVAlive": {
-          "type": "english",
-          "stopwords_path": ""
+    "settings": {
+        "number_of_shards": 3,
+        "refresh_interval": "1s",
+        "compress.default.type": "snappy",
+        "index.store.compress.stored": true,
+        "index.store.compress.tv": true,
+        "number_of_replicas": 1,
+        "analysis": {
+            "analyzer": {
+                "stopRemoveTVAlive": {
+                    "type": "english",
+                    "stopwords_path": ""
+                }
+            }
         }
-      }
-    }
-  },
-  "mappings": {
-    "tip": {
-      "_all": {
-        "enabled": false,
-        "norms": {
-          "enabled": false
-        }
-      },
-      "properties": {
-        "text": {
-          "type": "string",
-          "store": "true",
-          "term_vector": "with_positions",
-          "analyzer": "stopRemoveTVAlive",
-          "index": "analyzed"
-        },
-        "user_id": {
-          "type": "string"
-        },
-        "business_id": {
-          "type": "string"
-        },
-        "date": {
-          "type": "date",
-          "format": "dateOptionalTime"
-        },
-        "likes": {
-          "type": "long"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
     },
-    "business": {
-      "_all": {
-        "enabled": false,
-        "norms": {
-          "enabled": false
+    "mappings": {
+        "tip": {
+            "_all": {
+                "enabled": false,
+                "norms": {
+                    "enabled": false
+                }
+            },
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "store": "true",
+                    "term_vector": "with_positions",
+                    "analyzer": "stopRemoveTVAlive",
+                    "index": "analyzed"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "business_id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "date": {
+                    "type": "date",
+                    "format": "dateOptionalTime"
+                },
+                "likes": {
+                    "type": "long"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "business": {
+            "_all": {
+                "enabled": false,
+                "norms": {
+                    "enabled": false
+                }
+            },
+            "properties": {
+                "full_address": {
+                    "type": "string",
+                    "store": "true",
+                    "term_vector": "with_positions",
+                    "analyzer": "stopRemoveTVAlive",
+                    "index": "analyzed"
+                },
+                "business_id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "hours": {
+                    "type": "nested"
+                },
+                "open": {
+                    "type": "boolean"
+                },
+                "categories": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "city": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "review_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "neighborhoods": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "location": {
+                    "type": "geo_point"
+                },
+                "attributes": {
+                    "type": "nested"
+                },
+                "type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                }
+            }
+        },
+        "review": {
+            "_all": {
+                "enabled": false,
+                "norms": {
+                    "enabled": false
+                }
+            },
+            "properties": {
+                "business_id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "date": {
+                    "type": "date",
+                    "format": "dateOptionalTime"
+                },
+                "review_id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "stars": {
+                    "type": "long"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "user_id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "votes": {
+                    "properties": {
+                        "cool": {
+                            "type": "long"
+                        },
+                        "funny": {
+                            "type": "long"
+                        },
+                        "useful": {
+                            "type": "long"
+                        }
+                    }
+                }
+            }
         }
-      },
-      "properties": {
-        "full_address": {
-          "type": "string",
-          "store": "true",
-          "term_vector": "with_positions",
-          "analyzer": "stopRemoveTVAlive",
-          "index": "analyzed"
-        },
-        "business_id": {
-          "type": "string"
-        },
-        "hours": {
-          "type": "nested"
-        },
-        "open": {
-          "type": "boolean"
-        },
-        "categories": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "city": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "review_count": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "neighborhoods": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "location": {
-          "type": "geo_point"
-        },
-        "attributes": {
-          "type": "nested"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
     }
-  }
 }
