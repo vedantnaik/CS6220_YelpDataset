@@ -144,11 +144,11 @@ get review json array given a particular business_id
 
 def get_review_json_array(name='', business_id=''):
     reviews = []
-    review_search_result = es.search(index=indexName, doc_type=name,
+    review_search_result = es.search(index=indexName, doc_type=name, size= 5000,
                                      body={"query": {"match": {"business_id": business_id}}})
     for doc in review_search_result['hits']['hits']:
         reviews.append(doc['_source'])
-    print('returning ', len(reviews), ' number of reviews')
+    print('returning ', len(reviews), ' number of reviews for ', business_id)
     return reviews  # .sort(key= itemgetter('date'), reverse=True)
 
 
@@ -235,3 +235,4 @@ def start_insertion():
 
 if __name__ == '__main__':
     start_insertion()
+    
