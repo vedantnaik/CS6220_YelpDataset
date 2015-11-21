@@ -7,7 +7,7 @@ import time
 import util
 from operator import itemgetter
 
-es = Elasticsearch()
+es = Elasticsearch(timeout=60)
 indexName = 'yelp'
 
 '''
@@ -184,6 +184,7 @@ function to call flush and optimize
 def index_flush_translog():
     # es.indices.flush_synced
     es.indices.refresh
+
     es.indices.flush(force=True, index=indexName, wait_if_ongoing=True)
     print('refresh')
     # index_optimize
@@ -204,6 +205,8 @@ start inserting json
 
 
 def start_insertion():
+    start = time.clock()
+
     # starts with inserting mappings for es
     insert_mappings()
 
@@ -211,13 +214,18 @@ def start_insertion():
     insert_generic_json("review")
     # get_review_json_array('review','vcNAWiLM4dR7D2nwwJ7nCA')
 
+    print('timetaken review', time.clock() - start, 's')
+
     # force a tranlog flush because we need the review data
     # to populate inside business
     index_flush_translog()
 
+    print('timetaken flush_translog ', time.clock() - start, 's')
+
     # looks like business needs more attention
     insert_business_json("business")
 
+    print('timetaken business', time.clock() - start, 's')
     # insert tip for now
     # insert_generic_json("tip")
 
@@ -226,6 +234,4 @@ def start_insertion():
 
 
 if __name__ == '__main__':
-    start = time.clock()
     start_insertion()
-    print('timetaken', time.clock() - start)
