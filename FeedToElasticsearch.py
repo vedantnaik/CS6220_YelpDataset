@@ -67,7 +67,7 @@ def insert_business_json(name=""):
             business_json['_type'] = business_json['type']
             business_json['_index'] = indexName
             bulk_json.append(business_json)
-            if len(bulk_json) > 10000:
+            if len(bulk_json) > 1000:
                 print(business_json.get("type"), " -> ", bulk_json_id)
                 helpers.bulk(es, bulk_json)
                 bulk_json = []
@@ -235,4 +235,3 @@ def start_insertion():
 
 if __name__ == '__main__':
     start_insertion()
-    
