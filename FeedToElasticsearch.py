@@ -40,8 +40,8 @@ def insert_business_json(name=""):
     bulk_json_id = []
     with open(r"C:\yelp_dataset_challenge_academic_dataset\yelp_academic_dataset_" + name + ".json") as xFile:
         for line in xFile:
-            if count >= 10000:
-                break
+            # if count >= 10000:
+            #     break
             business_json = json.loads(line)
             business_id = business_json.get('business_id')
 
@@ -103,8 +103,8 @@ def insert_generic_json(name="", special_id=""):
                 # id=line_json.get(special_id), body=line_json, timeout=30)
                 line_json['_id'] = line_json.get(special_id)
             bulk_json_id.append(line_json.get(special_id))
-            if count >= 100000:
-                break
+            # if count >= 100000:
+            #     break
             line_json['_type'] = line_json.get("type")
             line_json['_index'] = indexName
             bulk_json.append(line_json)
