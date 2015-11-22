@@ -4,9 +4,9 @@ __author__ = 'Dixit_Patel'
 import json
 import pandas as pd
 import numpy as np
-from datetime import datetime
+
 import matplotlib.pyplot as plt
-# from elasticsearch import Elasticsearch
+
 from scipy import stats
 import statsmodels.api as sm
 from statsmodels.graphics.api import qqplot
@@ -61,23 +61,6 @@ def moving_averages_test():
     plt.legend()
     plt.show()
 
-def search1():
-    es = Elasticsearch(timeout=60)
-    indexName = 'yelp'
-    reviews_dates = {}
-    review_search_result = es.search(index=indexName, doc_type='review', size= 5000,
-                                     body={"query": {"match": {"business_id": '4bEjOyTaDG24SY5TxsaUNQ'}}})
-    for doc in review_search_result['hits']['hits']:
-        strin = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').year)
-        if strin in reviews_dates:
-            reviews_dates[strin] = reviews_dates[strin] + 1
-        else:
-            reviews_dates[strin] = 1
-
-    for k,v in reviews_dates.iteritems():
-        print (k , ',' ,v)
-
-
 def auto_regression_moving_averagess():
     print(sm.datasets.sunspots.NOTE)
 
@@ -98,7 +81,6 @@ def auto_regression_moving_averagess():
 
 
 if __name__ == '__main__':
-    # print "Date, review_count"
+    print("Date, review_count")
     # moving_averages_test()
-    auto_regression_moving_averagess()
-    # search1()
+    # auto_regression_moving_averagess()
