@@ -1,8 +1,15 @@
+from __future__ import print_function
 __author__ = 'Dixit_Patel'
+
 import json
 import pandas as pd
 import numpy as np
+from datetime import datetime
 import matplotlib.pyplot as plt
+# from elasticsearch import Elasticsearch
+from scipy import stats
+import statsmodels.api as sm
+from statsmodels.graphics.api import qqplot
 
 
 def test():
@@ -33,27 +40,65 @@ def small_date():
     print('ar',  len(ar),  ar)
     # print('ar',  len(as),  as)
 
-def tsPandas():
+def moving_averages_test():
     print ("ts")
-    df = pd.read_csv('resources/table.csv')
+    df = pd.read_csv('resources/review_business_count_4bEjOyTaDG24SY5TxsaUNQ.csv')
 
-    df = pd.read_csv('resources/table.csv', index_col='Date', parse_dates=True)
+    df = pd.read_csv('resources/year_2009_10_review_count.csv', index_col='Date', parse_dates=True)
 
     # print df.head()
     # print df.tail()
 
 
-    close_px = df['Adj Close']
+    close_px = df['review_count']
 
     close_px = close_px.sort_index(ascending=True)
-    close_px = close_px.tail(500)
-    mavg = pd.rolling_mean(close_px, 40)
+    # close_px = close_px.tail(500)
+    mavg = pd.rolling_mean(close_px, 8)
 
-    close_px.plot(label='Close')
+    close_px.plot(label='review_count')
     mavg.plot(label='mavg')
     plt.legend()
     plt.show()
 
+def search1():
+    es = Elasticsearch(timeout=60)
+    indexName = 'yelp'
+    reviews_dates = {}
+    review_search_result = es.search(index=indexName, doc_type='review', size= 5000,
+                                     body={"query": {"match": {"business_id": '4bEjOyTaDG24SY5TxsaUNQ'}}})
+    for doc in review_search_result['hits']['hits']:
+        strin = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').year)
+        if strin in reviews_dates:
+            reviews_dates[strin] = reviews_dates[strin] + 1
+        else:
+            reviews_dates[strin] = 1
+
+    for k,v in reviews_dates.iteritems():
+        print (k , ',' ,v)
+
+
+def auto_regression_moving_averagess():
+    print(sm.datasets.sunspots.NOTE)
+
+    dta = sm.datasets.sunspots.load_pandas().data
+    print(dta)
+    print(pd.Index(sm.tsa.datetools.dates_from_range('2005', '2015')))
+    dta.index = pd.Index(sm.tsa.datetools.dates_from_range('2005', '2015'))
+    del dta["YEAR"]
+    dta.plot(figsize=(12,8))
+
+    fig = plt.figure(figsize=(12,8))
+    ax1 = fig.add_subplot(211)
+    fig = sm.graphics.tsa.plot_acf(dta.values.squeeze(), lags=1, ax=ax1)
+    ax2 = fig.add_subplot(212)
+    fig = sm.graphics.tsa.plot_pacf(dta, lags=40, ax=ax2)
+    plt.legend()
+    plt.show()
+
+
 if __name__ == '__main__':
-    print "start"
-    tsPandas()
+    # print "Date, review_count"
+    # moving_averages_test()
+    auto_regression_moving_averagess()
+    # search1()
