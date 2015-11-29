@@ -2,6 +2,9 @@ __author__ = 'Dixit_Patel'
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
+import matplotlib.pyplot as plt
+import numpy as np
+from collections import OrderedDict
 
 '''
 search for review count occuring for
@@ -30,11 +33,34 @@ def search_review_count(argument='M'):
             reviews_dates[argument_day] = reviews_dates[argument_day] + 1
         else:
             reviews_dates[argument_day] = 1
+    #ordering
+    reviews_dates = OrderedDict(sorted(reviews_dates.items(), key=lambda t: t[0]))
 
     for k,v in reviews_dates.iteritems():
         print (str(k)+','+str(v))
 
     return reviews_dates
 
+def sample_plot1():
+    x = np.array([datetime(2013, 9, 28, i, 0) for i in range(24)])
+    print x
+    y = np.random.randint(100, size=x.shape)
+
+    plt.plot(x,y)
+    plt.show()
+
+def sample_plot():
+    x = []
+    y = []
+
+    with open(r"resources\sample_dates_2011.txt") as xfile:
+        for line in xfile:
+            line = line.split(',')
+            x.append(datetime.strptime(line[0], '%Y-%m-%d %H:%M:%S'))
+            y.append(line[1])
+
+    plt.plot(x,y)
+    plt.show()
 if __name__ == '__main__':
-    search_review_count('W')
+    # search_review_count('D')
+    sample_plot()
