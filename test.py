@@ -42,22 +42,18 @@ def small_date():
 
 def moving_averages_test():
     print ("ts")
-    df = pd.read_csv('resources/review_business_count_4bEjOyTaDG24SY5TxsaUNQ.csv')
+    # df = pd.read_csv('resources/review_business_count_4bEjOyTaDG24SY5TxsaUNQ.csv')
 
-    df = pd.read_csv('resources/year_2009_10_review_count.csv', index_col='Date', parse_dates=True)
-
-    # print df.head()
-    # print df.tail()
-
+    df = pd.read_csv('resources/year_all_review_count.csv', index_col='Date', parse_dates=True)
 
     close_px = df['review_count']
-
+    print (df)
     close_px = close_px.sort_index(ascending=True)
     # close_px = close_px.tail(500)
-    mavg = pd.rolling_mean(close_px, 8)
+    mavg = pd.rolling_mean(close_px, 30)
 
-    close_px.plot(label='review_count')
-    mavg.plot(label='mavg')
+    # close_px.plot(label='review_count')
+    mavg.plot(label='mavg20_2010')
     plt.legend()
     plt.show()
 
@@ -82,5 +78,5 @@ def auto_regression_moving_averagess():
 
 if __name__ == '__main__':
     print("Date, review_count")
-    # moving_averages_test()
+    moving_averages_test()
     # auto_regression_moving_averagess()

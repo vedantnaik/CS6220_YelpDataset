@@ -4,6 +4,7 @@ from elasticsearch import Elasticsearch
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from collections import OrderedDict
 
 '''
@@ -59,8 +60,10 @@ def sample_plot():
             x.append(datetime.strptime(line[0], '%Y-%m-%d %H:%M:%S'))
             y.append(line[1])
 
+
     plt.plot(x,y)
     plt.show()
+
 if __name__ == '__main__':
     # search_review_count('D')
     sample_plot()
