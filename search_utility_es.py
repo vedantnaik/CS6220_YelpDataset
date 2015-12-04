@@ -14,19 +14,19 @@ with           Y    M      D       W
 default = Date(D)
 '''
 
-def search_review_count(argument='M'):
+def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
     es = Elasticsearch(timeout=60)
     indexName = 'yelp'
     reviews_dates = {}
     review_search_result = es.search(index=indexName, doc_type='review', size= 5000,
-                                     body={"query": {"match": {"business_id": '4bEjOyTaDG24SY5TxsaUNQ'}}})
+                                     body={"query": {"match": {"business_id": business_id}}})
     for doc in review_search_result['hits']['hits']:
         if argument == 'M':
             argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').month)
         elif argument == 'Y':
             argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').year)
         elif argument == 'D':
-            argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d'))
+            argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').date())
         elif argument == 'W':
             argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').weekday())
 
@@ -37,8 +37,14 @@ def search_review_count(argument='M'):
     #ordering
     reviews_dates = OrderedDict(sorted(reviews_dates.items(), key=lambda t: t[0]))
 
-    for k,v in reviews_dates.iteritems():
-        print (str(k)+','+str(v))
+
+    with open('resources/year_all_review_count_'+business_id+'.csv', 'w+') as f:
+        f.write('Date,review_count')
+        f.write('\n')
+        for k,v in reviews_dates.iteritems():
+            print (str(k)+','+str(v))
+            f.write(str(k)+','+str(v))
+            f.write('\n')
 
     return reviews_dates
 
@@ -65,5 +71,5 @@ def sample_plot():
     plt.show()
 
 if __name__ == '__main__':
-    # search_review_count('D')
-    sample_plot()
+    search_review_count('D', '4bEjOyTaDG24SY5TxsaUNQ')
+    # sample_plot()
