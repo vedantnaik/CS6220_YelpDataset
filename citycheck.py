@@ -1,7 +1,7 @@
 from datetime import date
 from string import find
 import cPickle
-from datetime import datetime
+from datetime import datetime, timedelta, date
 import json
 
 """
@@ -99,6 +99,12 @@ def initYearDays(yyyy):
         dict[yyyy].update({i+1:(0,0)})
     return dict
 
+def tofirstdayinisoweek(year, week):
+    ret = datetime.strptime('%04d-%02d-1' % (year, week), '%Y-%W-%w')
+    if date(year, 1, 4).isoweekday() > 4:
+        ret -= timedelta(days=7)
+    return ret
+
 def workOnFile(cityToConsider):
     with open("myDataFiles\iReviewDateDict_"+cityToConsider,'rb') as f:
         print "reading from file"
@@ -140,18 +146,27 @@ def workOnFile(cityToConsider):
                 yearDayCount[bid][yyyy][yearDay] = (dt, c+1)
 
 
+        for y in weekCount["4bEjOyTaDG24SY5TxsaUNQ"].keys():
+            print "==============================================="
+            for k in weekCount["4bEjOyTaDG24SY5TxsaUNQ"][y].keys():
+                xCount = weekCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
+                if xCount > 0:
+                    print (tofirstdayinisoweek(int(y),int(k)).date()), ", ", xCount
+
         # for yyyy in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"]:
         #     for xDate, xCount in [x for x in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][yyyy].values() if not x is (0,0)]:
         #         count += 1
         #         # print xDate, ", ", xCount
         #     print yyyy + " - " + yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][yyyy].__str__()
 
-        for y in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"].keys():
-            print "==============================================="
-            for k in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y].keys():
-                xDate, xCount = yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
-                if xCount > 0:
-                    print xDate, ", ", xCount
+
+        """THIS WORKS"""
+        # for y in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"].keys():
+        #     print "==============================================="
+        #     for k in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y].keys():
+        #         xDate, xCount = yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
+        #         if xCount > 0:
+        #             print xDate, ", ", xCount
 
         print count
         f.close()
@@ -178,10 +193,10 @@ def businessIdsClubbing(cityToConsider):
             topCats.add(c)
         f.close()
 
-    return catBidDict, bidsInTopCats
+    return catBidDict#, bidsInTopCats
 
 if __name__ == '__main__':
     cityToConsider = "Las Vegas"
-    # makeFile(cityToConsider)
+    #makeFile(cityToConsider)
     workOnFile(cityToConsider)
     # businessIdsClubbing(cityToConsider)
