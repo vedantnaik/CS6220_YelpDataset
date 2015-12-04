@@ -1,8 +1,7 @@
 from datetime import date
 from string import find
 import cPickle
-
-__author__ = 'Dixit_Patel'
+from datetime import datetime
 import json
 
 """
@@ -13,7 +12,6 @@ def removeText(str):
     startIndex = find(str, "\"text\":")
     startIndex += 9
     return str[0:startIndex] + str[str.rfind("\", \"type\":"):len(str)]
-
 
 def makeFile(cityToConsider):
     businessIdDict = {}     #   {cityName : list of business ids}
@@ -42,7 +40,7 @@ def makeFile(cityToConsider):
     we also make a list of bids in our city
     """
     bidsInOurCity = []
-    bidCategoryDict = {}
+    bidCategoryDict = {}    # {bid: category list}
     for id, categories in businessIdDict[cityToConsider]:
         bidsInOurCity.append(id)
         bidCategoryDict.update({id:categories})
@@ -87,18 +85,26 @@ def makeFile(cityToConsider):
         cPickle.dump(reviewDateDict, f)
         f.close()
 
-
-def initYear(yyyy):
+def initYearWeeks(yyyy):
     dict = {}
     dict.update({yyyy:{}})
     for i in range(53):
         dict[yyyy].update({i+1:0})
     return dict
 
+def initYearDays(yyyy):
+    dict = {}
+    dict.update({yyyy:{}})
+    for i in range(366):
+        dict[yyyy].update({i+1:(0,0)})
+    return dict
+
 def workOnFile(cityToConsider):
     with open("myDataFiles\iReviewDateDict_"+cityToConsider,'rb') as f:
         print "reading from file"
         reviewDateDict = cPickle.load(f)
+#        catBidDict, bidsInTopCats = businessIdsClubbing(cityToConsider)
+
         count = 0
 
         """
@@ -106,31 +112,76 @@ def workOnFile(cityToConsider):
             {bid : {year : {weekNum : count}}}
         """
         weekCount = {}
+        yearDayCount = {}
 
         for bid in [x for x in reviewDateDict.keys() if len(reviewDateDict[x]) > 100 and x == "4bEjOyTaDG24SY5TxsaUNQ"]:
-            count += 1
+            # count += 1
             weekCount.update({bid: {}})
+            yearDayCount.update({bid: {}})
 
             for dt in sorted(reviewDateDict[bid], key=lambda d: map(int, d.split('-'))):
+                # count += 1
                 yyyy, mm, dd = dt.split("-")
-                if not weekCount[bid].keys().__contains__(yyyy):
-                    happyNewYear = initYear(yyyy)
-                    weekCount[bid].update(happyNewYear)
 
-                dateObj = date(int (yyyy), int (mm),int (dd))
-                weekNum = dateObj.isocalendar()[1]
+
+                if not weekCount[bid].keys().__contains__(yyyy):
+                    happyNewYear = initYearWeeks(yyyy)
+                    weekCount[bid].update(happyNewYear)
+                    yearDayCount[bid].update(initYearDays(yyyy))
+
+
+                dateObj = datetime(int (yyyy), int (mm),int (dd))
+                y, weekNum, weekDay = dateObj.isocalendar()
                 c = weekCount[bid][yyyy][weekNum]
                 weekCount[bid][yyyy][weekNum] = c+1
 
-        for yyyy in weekCount["4bEjOyTaDG24SY5TxsaUNQ"]:
-            print yyyy + " - " + weekCount["4bEjOyTaDG24SY5TxsaUNQ"][yyyy].__str__()
+                yearDay = dateObj.timetuple().tm_yday
+                dtO, c = yearDayCount[bid][yyyy][yearDay]
+                yearDayCount[bid][yyyy][yearDay] = (dt, c+1)
+
+
+        # for yyyy in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"]:
+        #     for xDate, xCount in [x for x in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][yyyy].values() if not x is (0,0)]:
+        #         count += 1
+        #         # print xDate, ", ", xCount
+        #     print yyyy + " - " + yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][yyyy].__str__()
+
+        for y in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"].keys():
+            print "==============================================="
+            for k in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y].keys():
+                xDate, xCount = yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
+                if xCount > 0:
+                    print xDate, ", ", xCount
 
         print count
         f.close()
 
 
+def businessIdsClubbing(cityToConsider):
+    with open("myDataFiles\iBusinessCategoryDict_"+cityToConsider,'rb') as f:
+        print "reading from file"
+        businessDict = cPickle.load(f)
+        # {bid: category list}
+
+        catBidDict = {}
+        for bid in businessDict:
+            for cat in businessDict[bid]:
+                if cat not in catBidDict.keys():
+                    catBidDict.update({cat: [bid]})
+                else:
+                    catBidDict[cat].append(bid)
+
+        topCats = set()
+        for c in [x for x in catBidDict.keys() if len(catBidDict[x]) > 500]:
+            print c, len(catBidDict[c]), " - ", catBidDict[c]
+
+            topCats.add(c)
+        f.close()
+
+    return catBidDict, bidsInTopCats
+
 if __name__ == '__main__':
     cityToConsider = "Las Vegas"
-    makeFile(cityToConsider)
+    # makeFile(cityToConsider)
     workOnFile(cityToConsider)
-    
+    # businessIdsClubbing(cityToConsider)
