@@ -89,12 +89,14 @@ def auto_regression_moving_averages(file_name):
     print(predict_reviews)
 
     fig, ax = plt.subplots(figsize=(12, 8))
-    ax = df.ix['2005':].plot(ax=ax)
-    fig = arma_mod30.plot_predict('2012', '2015', dynamic=True, ax=ax, plot_insample=False)
+    ax = df.ix['2008':].plot(ax=ax)
+    fig = arma_mod30.plot_predict('2014', '2015', dynamic=True, ax=ax, plot_insample=False)
 
     plt.legend()
     plt.show()
 
 if __name__ == '__main__':
     # seasonal_decomposition('resources/year_all_review_count.csv')
-    auto_regression_moving_averages('resources/year_all_review_count.csv')
+    bidToConsider = '4bEjOyTaDG24SY5TxsaUNQ'
+
+    auto_regression_moving_averages('resources/year_all_review_count_'+bidToConsider+'.csv')

@@ -1,3 +1,5 @@
+__author__ = 'Vedant'
+
 from datetime import date
 from string import find
 import cPickle
@@ -154,10 +156,12 @@ def workOnFile(cityToConsider, bidToConsider):
                 xCount = weekCount[bidToConsider][y][k]
                 if xCount > 0:
                     finalDict.update({(tofirstdayinisoweek(int(y),int(k)).date()):xCount})
+                elif xCount == 0:
+                    finalDict.update({(tofirstdayinisoweek(int(y),int(k)).date()):1})
 
         finalDict = OrderedDict(sorted(finalDict.items(), key=lambda t: t[0]))
 
-        with open('resources/year_all_review_count_'+bidToConsider+'.csv', 'w+') as f:
+        with open('resources/year_all_review_count_'+bidToConsider+'_smooth.csv', 'w+') as f:
             f.write('Date,review_count')
             f.write('\n')
             for d in finalDict.keys():
@@ -196,29 +200,6 @@ def workOnFile(cityToConsider, bidToConsider):
         print count
         f.close()
 
-
-def businessIdsClubbing(cityToConsider):
-    with open("myDataFiles\iBusinessCategoryDict_"+cityToConsider,'rb') as f:
-        print "reading from file"
-        businessDict = cPickle.load(f)
-        # {bid: category list}
-
-        catBidDict = {}
-        for bid in businessDict:
-            for cat in businessDict[bid]:
-                if cat not in catBidDict.keys():
-                    catBidDict.update({cat: [bid]})
-                else:
-                    catBidDict[cat].append(bid)
-
-        topCats = set()
-        for c in [x for x in catBidDict.keys() if len(catBidDict[x]) > 500]:
-            print c, len(catBidDict[c]), " - ", catBidDict[c]
-
-            topCats.add(c)
-        f.close()
-
-    return catBidDict#, bidsInTopCats
 
 if __name__ == '__main__':
     cityToConsider = "Las Vegas"
