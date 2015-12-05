@@ -1,7 +1,7 @@
 __author__ = 'Dixit_Patel'
 
 from elasticsearch import Elasticsearch
-from datetime import datetime
+from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -21,14 +21,15 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
     review_search_result = es.search(index=indexName, doc_type='review', size= 5000,
                                      body={"query": {"match": {"business_id": business_id}}})
     for doc in review_search_result['hits']['hits']:
+        temp_date = datetime.strptime(doc['_source']['date'], '%Y-%m-%d')
         if argument == 'M':
-            argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').month)
+            argument_day = temp_date.month
         elif argument == 'Y':
-            argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').year)
+            argument_day = temp_date.year
         elif argument == 'D':
-            argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').date())
+            argument_day = temp_date.date()
         elif argument == 'W':
-            argument_day = str(datetime.strptime(doc['_source']['date'],'%Y-%m-%d').weekday())
+            argument_day = (temp_date - timedelta(days=temp_date.weekday())).date()
 
         if argument_day in reviews_dates:
             reviews_dates[argument_day] = reviews_dates[argument_day] + 1
@@ -47,6 +48,17 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
             f.write('\n')
 
     return reviews_dates
+
+'''
+ref:
+http://stackoverflow.com/questions/3424899/whats-the-simplest-way-to-subtract-a-month-from-a-date-in-python
+'''
+def monthdelta(date, delta):
+    m, y = (date.month+delta) % 12, date.year + ((date.month)+delta-1) // 12
+    if not m: m = 12
+    d = min(date.day, [31,
+        29 if y%4==0 and not y%400==0 else 28,31,30,31,30,31,31,30,31,30,31][m-1])
+    return date.replace(day=d,month=m, year=y)
 
 def sample_plot1():
     x = np.array([datetime(2013, 9, 28, i, 0) for i in range(24)])
@@ -71,5 +83,5 @@ def sample_plot():
     plt.show()
 
 if __name__ == '__main__':
-    search_review_count('D', '4bEjOyTaDG24SY5TxsaUNQ')
+    search_review_count('W', 'Xhg93cMdemu5pAMkDoEdtQ')
     # sample_plot()
