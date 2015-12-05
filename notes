@@ -1,0 +1,7 @@
+p is lag
+q is the difference to make trend stationary
+r is the order for moving avg
+
+1. get delta y when t = 1
+  using dickey fuller test, get p-value .. is near 0, right track. delta is stationary = use for arima
+  

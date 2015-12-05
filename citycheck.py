@@ -3,6 +3,7 @@ from string import find
 import cPickle
 from datetime import datetime, timedelta, date
 import json
+from collections import OrderedDict
 
 """
 input: "abcdnsdkfjd "text": "sdfnkjsdfkjbd", "type": "review" sdfnsdkjfnksdf"
@@ -105,7 +106,8 @@ def tofirstdayinisoweek(year, week):
         ret -= timedelta(days=7)
     return ret
 
-def workOnFile(cityToConsider):
+
+def workOnFile(cityToConsider, bidToConsider):
     with open("myDataFiles\iReviewDateDict_"+cityToConsider,'rb') as f:
         print "reading from file"
         reviewDateDict = cPickle.load(f)
@@ -120,7 +122,7 @@ def workOnFile(cityToConsider):
         weekCount = {}
         yearDayCount = {}
 
-        for bid in [x for x in reviewDateDict.keys() if len(reviewDateDict[x]) > 100 and x == "4bEjOyTaDG24SY5TxsaUNQ"]:
+        for bid in [x for x in reviewDateDict.keys() if len(reviewDateDict[x]) > 100 and x == bidToConsider]:
             # count += 1
             weekCount.update({bid: {}})
             yearDayCount.update({bid: {}})
@@ -146,12 +148,22 @@ def workOnFile(cityToConsider):
                 yearDayCount[bid][yyyy][yearDay] = (dt, c+1)
 
 
-        for y in weekCount["4bEjOyTaDG24SY5TxsaUNQ"].keys():
-            print "==============================================="
-            for k in weekCount["4bEjOyTaDG24SY5TxsaUNQ"][y].keys():
-                xCount = weekCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
+        finalDict = {}
+        for y in weekCount[bidToConsider].keys():
+            for k in weekCount[bidToConsider][y].keys():
+                xCount = weekCount[bidToConsider][y][k]
                 if xCount > 0:
-                    print (tofirstdayinisoweek(int(y),int(k)).date()), ", ", xCount
+                    finalDict.update({(tofirstdayinisoweek(int(y),int(k)).date()):xCount})
+
+        finalDict = OrderedDict(sorted(finalDict.items(), key=lambda t: t[0]))
+
+        with open('resources/year_all_review_count_'+bidToConsider+'.csv', 'w+') as f:
+            f.write('Date,review_count')
+            f.write('\n')
+            for d in finalDict.keys():
+                f.write(d.__str__() + "," + finalDict[d].__str__())
+                f.write("\n")
+
 
         # for yyyy in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"]:
         #     for xDate, xCount in [x for x in yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][yyyy].values() if not x is (0,0)]:
@@ -167,6 +179,19 @@ def workOnFile(cityToConsider):
         #         xDate, xCount = yearDayCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
         #         if xCount > 0:
         #             print xDate, ", ", xCount
+
+        """THIS WORKS FOR WEEK COUNTS SHOWN @ DATE @ START OF WEEK"""
+        # with open('resources/year_all_review_count_4bEjOyTaDG24SY5TxsaUNQ.csv', 'w+') as f:
+        #     f.write('Date,review_count')
+        #     f.write('\n')
+        #     for y in weekCount["4bEjOyTaDG24SY5TxsaUNQ"].keys():
+        #         print "==============================================="
+        #         for k in weekCount["4bEjOyTaDG24SY5TxsaUNQ"][y].keys():
+        #             xCount = weekCount["4bEjOyTaDG24SY5TxsaUNQ"][y][k]
+        #             if xCount > 0:
+        #                 print (tofirstdayinisoweek(int(y),int(k)).date()), ", ", xCount
+        #                 f.write((tofirstdayinisoweek(int(y),int(k)).date()).__str__()+", "+xCount.__str__())
+        #                 f.write('\n')
 
         print count
         f.close()
@@ -197,6 +222,7 @@ def businessIdsClubbing(cityToConsider):
 
 if __name__ == '__main__':
     cityToConsider = "Las Vegas"
+    bidToConsider = "4bEjOyTaDG24SY5TxsaUNQ"
     #makeFile(cityToConsider)
-    workOnFile(cityToConsider)
+    workOnFile(cityToConsider, bidToConsider)
     # businessIdsClubbing(cityToConsider)

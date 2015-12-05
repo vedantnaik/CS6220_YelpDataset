@@ -52,10 +52,10 @@ def auto_regression_moving_averages(file_name):
 
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(211)
-    fig = sm.graphics.tsa.plot_pacf(flow, lags=40, ax=ax)
+    fig = sm.graphics.tsa.plot_pacf(flow, lags=10, ax=ax)
 
     ax = fig.add_subplot(212)
-    fig = sm.graphics.tsa.plot_acf(flow, lags=40, ax=ax)
+    fig = sm.graphics.tsa.plot_acf(flow, lags=10, ax=ax)
 
     # arma_mod20 = sm.tsa.ARMA(flow, (2, 0)).fit()
     # print('=')
@@ -91,8 +91,8 @@ def auto_regression_moving_averages(file_name):
     print(predict_reviews)
 
     fig, ax = plt.subplots(figsize=(12, 8))
-    ax = df.ix['2005':].plot(ax=ax)
-    fig = arma_mod30.plot_predict('2012', '2015', dynamic=True, ax=ax, plot_insample=False)
+    ax = df.ix['2008':].plot(ax=ax)
+    fig = arma_mod30.plot_predict('2014', '2015', dynamic=True, ax=ax, plot_insample=False)
 
     plt.legend()
     plt.show()
@@ -117,6 +117,7 @@ def print_auto_regression_moving_averages(file_name, p, r):
 
 if __name__ == '__main__':
     # seasonal_decomposition('resources/year_all_review_count.csv')
+<<<<<<< HEAD
     print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 1, 0)
     print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 2, 0)
 
@@ -126,3 +127,8 @@ if __name__ == '__main__':
     print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 1, 1)
     print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 1, 0)
 
+=======
+    bidToConsider = '4bEjOyTaDG24SY5TxsaUNQ'
+
+    auto_regression_moving_averages('resources/year_all_review_count_'+bidToConsider+'_smooth.csv')
+>>>>>>> 4d0726607b8a6aa186c14c1ca34e76b92b62e7dc
