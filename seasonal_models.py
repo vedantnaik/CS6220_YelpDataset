@@ -57,18 +57,19 @@ def auto_regression_moving_averages(file_name):
     ax = fig.add_subplot(212)
     fig = sm.graphics.tsa.plot_acf(flow, lags=40, ax=ax)
 
-    arma_mod20 = sm.tsa.ARMA(flow, (2, 0)).fit()
-    print('=')
-    print(arma_mod20.params)
-    print('=')
-    arma_mod30 = sm.tsa.ARMA(flow, (3, 0)).fit()
+    # arma_mod20 = sm.tsa.ARMA(flow, (2, 0)).fit()
+    # print('=')
+    # print(arma_mod20.params)
+    # print('=')
+    arma_mod30 = sm.tsa.ARMA(flow, (3, 1)).fit()
 
-    print('==')
-    print(arma_mod20.aic, arma_mod20.bic, arma_mod20.hqic)
-    print('==')
+    # print('==')
+    # print(arma_mod20.aic, arma_mod20.bic, arma_mod20.hqic)
+    # print('==')
 
     print('===')
     print(arma_mod30.params)
+    print(arma_mod30.aic, arma_mod30.bic, arma_mod30.hqic)
     print('===')
 
     resid = arma_mod30.resid
@@ -81,6 +82,7 @@ def auto_regression_moving_averages(file_name):
     fig = sm.graphics.tsa.plot_pacf(resid, lags=40, ax=ax2)
 
     r, q, p = sm.tsa.acf(resid.values.squeeze(), qstat=True)
+    print '==>', p, q, r
     data = np.c_[range(1, 41), r[1:], q, p]
     table = pd.DataFrame(data, columns=['lag', "AC", "Q", "Prob(>Q)"])
     print(table.set_index('lag'))
@@ -95,6 +97,32 @@ def auto_regression_moving_averages(file_name):
     plt.legend()
     plt.show()
 
+def print_auto_regression_moving_averages(file_name, p, r):
+    df = ['Index', 'Date', 'review_count']
+    df = pd.read_csv(file_name, delimiter=',').dropna()
+    df['review_count_lambda_smooth'] = df['review_count'].apply(lambda x: x+1)
+
+    df.index = pd.DatetimeIndex(df['Date'])
+    df = df.resample('M', how='mean')
+    df = df.fillna(1)
+
+    flow = df['review_count_lambda_smooth']
+
+    arma_mod30 = sm.tsa.ARMA(flow, (p, r)).fit()
+    print('===', 'p', p, 'r', r)
+    print(arma_mod30.params)
+    print('aic ', arma_mod30.aic, 'bic ', arma_mod30.bic, ' hqic ',  arma_mod30.hqic)
+    print('===')
+
+
 if __name__ == '__main__':
     # seasonal_decomposition('resources/year_all_review_count.csv')
-    auto_regression_moving_averages('resources/year_all_review_count.csv')
+    print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 1, 0)
+    print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 2, 0)
+
+    print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 0, 1)
+    print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 0, 2)
+
+    print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 1, 1)
+    print_auto_regression_moving_averages('resources/year_all_review_count_'+ '4bEjOyTaDG24SY5TxsaUNQ' +'.csv', 1, 0)
+
