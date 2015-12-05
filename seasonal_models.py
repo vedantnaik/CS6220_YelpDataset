@@ -52,10 +52,10 @@ def auto_regression_moving_averages(file_name):
 
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(211)
-    fig = sm.graphics.tsa.plot_pacf(flow, lags=40, ax=ax)
+    fig = sm.graphics.tsa.plot_pacf(flow, lags=10, ax=ax)
 
     ax = fig.add_subplot(212)
-    fig = sm.graphics.tsa.plot_acf(flow, lags=40, ax=ax)
+    fig = sm.graphics.tsa.plot_acf(flow, lags=10, ax=ax)
 
     arma_mod20 = sm.tsa.ARMA(flow, (2, 0)).fit()
     print('=')
@@ -99,4 +99,4 @@ if __name__ == '__main__':
     # seasonal_decomposition('resources/year_all_review_count.csv')
     bidToConsider = '4bEjOyTaDG24SY5TxsaUNQ'
 
-    auto_regression_moving_averages('resources/year_all_review_count_'+bidToConsider+'.csv')
+    auto_regression_moving_averages('resources/year_all_review_count_'+bidToConsider+'_smooth.csv')

@@ -153,11 +153,8 @@ def workOnFile(cityToConsider, bidToConsider):
         finalDict = {}
         for y in weekCount[bidToConsider].keys():
             for k in weekCount[bidToConsider][y].keys():
-                xCount = weekCount[bidToConsider][y][k]
-                if xCount > 0:
-                    finalDict.update({(tofirstdayinisoweek(int(y),int(k)).date()):xCount})
-                elif xCount == 0:
-                    finalDict.update({(tofirstdayinisoweek(int(y),int(k)).date()):1})
+                xCount = weekCount[bidToConsider][y][k] + 1
+                finalDict.update({(tofirstdayinisoweek(int(y),int(k)).date()):xCount})
 
         finalDict = OrderedDict(sorted(finalDict.items(), key=lambda t: t[0]))
 
@@ -203,7 +200,35 @@ def workOnFile(cityToConsider, bidToConsider):
 
 if __name__ == '__main__':
     cityToConsider = "Las Vegas"
-    bidToConsider = "4bEjOyTaDG24SY5TxsaUNQ"
     #makeFile(cityToConsider)
+    bidToConsider = "4bEjOyTaDG24SY5TxsaUNQ"
     workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "2e2e7WgqU1BnpxmQL5jbfw"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "zt1TpTuJ6y9n551sw9TaEg"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "sIyHTizqAiGu12XMLX3N3g"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "Xhg93cMdemu5pAMkDoEdtQ"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "YNQgak-ZLtYJQxlDwN-qIg"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "tFU2Js_nbIZOrnKfYJYBBg"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "CZjcFdvJhksq9dy58NVEzw"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "aGbjLWzcrnEx2ZmMCFm3EA"
+    workOnFile(cityToConsider, bidToConsider)
+
+    bidToConsider = "AtjsjFzalWqJ7S9DUFQ4bw"
+    workOnFile(cityToConsider, bidToConsider)
+
     # businessIdsClubbing(cityToConsider)
