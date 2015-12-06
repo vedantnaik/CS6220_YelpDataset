@@ -21,21 +21,24 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
     review_search_result = es.search(index=indexName, doc_type='review', size= 5000,
                                      body={"query": {"match": {"business_id": business_id}}})
     for doc in review_search_result['hits']['hits']:
-        temp_date = datetime.strptime(doc['_source']['date'], '%Y-%m-%d')
+        popularity_score = (0.7 * doc['_source']['stars'] * doc['_source']['votes']['useful'] +
+                            0.2 * doc['_source']['stars'] * doc['_source']['votes']['cool'] +
+                            0.1 * doc['_source']['stars']) / doc['_source']['stars']
+        temp_date_pop_index = (datetime.strptime(doc['_source']['date'], '%Y-%m-%d'), popularity_score)
         if argument == 'M':
             # argument_day = str('%02d' % temp_date.month) + "-" + str(temp_date.year)
-            argument_day = temp_date.date()
+            argument_day = temp_date_pop_index[0].date()
         elif argument == 'Y':
-            argument_day = temp_date.year
+            argument_day = temp_date_pop_index[0].year
         elif argument == 'D':
-            argument_day = temp_date.date()
+            argument_day = temp_date_pop_index[0].date()
         elif argument == 'W':
-            argument_day = (temp_date - timedelta(days=temp_date.weekday())).date()
+            argument_day = (temp_date_pop_index[0] - timedelta(days=temp_date_pop_index[0].weekday())).date()
 
         if argument_day in reviews_dates:
-            reviews_dates[argument_day] = reviews_dates[argument_day] + 1
+            reviews_dates[argument_day] += temp_date_pop_index[1]
         else:
-            reviews_dates[argument_day] = 1
+            reviews_dates[argument_day] = temp_date_pop_index[1]
     #ordering
     reviews_dates = OrderedDict(sorted(reviews_dates.items(), key=lambda t: t[0]))
 
@@ -46,7 +49,7 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
         for yr in range(reviews_dates.keys()[0].year, reviews_dates.keys()[len(reviews_dates) - 1].year + 1):
             for k in months:
                 month = str('%02d' % int(k)) + "-" + str(yr)
-                review_months[month] = 1
+                review_months[month] = 0.1
 
 
         for k, v in reviews_dates.iteritems():
@@ -58,7 +61,7 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
     with open('resources/year_all_review_count_'+business_id+'.csv', 'w+') as f:
         f.write('Date,review_count')
         f.write('\n')
-        for k,v in reviews_dates.iteritems():
+        for k, v in reviews_dates.iteritems():
             print (str(k)+','+str(v))
             f.write(str(k)+','+str(v))
             f.write('\n')
@@ -73,8 +76,7 @@ http://stackoverflow.com/questions/3424899/whats-the-simplest-way-to-subtract-a-
 def monthdelta(date, delta):
     m, y = (date.month+delta) % 12, date.year + ((date.month)+delta-1) // 12
     if not m: m = 12
-    d = min(date.day, [31,
-        29 if y%4==0 and not y%400==0 else 28,31,30,31,30,31,31,30,31,30,31][m-1])
+    d = min(date.day, [31, 29 if y % 4 == 0 and not y % 400 == 0 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m-1])
     return date.replace(day=d, month=m, year=y)
 
 def sample_plot1():
