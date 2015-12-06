@@ -41,14 +41,17 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
 
     # looping again for getting monthly date
     if argument == 'M':
+        months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         review_months = OrderedDict({})
+        for yr in range(reviews_dates.keys()[0].year, reviews_dates.keys()[len(reviews_dates) - 1].year + 1):
+            for k in months:
+                month = str('%02d' % int(k)) + "-" + str(yr)
+                review_months[month] = 1
+
+
         for k, v in reviews_dates.iteritems():
             month = str('%02d' % k.month) + "-" + str(k.year)
-
-            if month in review_months:
-                review_months[month] = review_months[month] + v
-            else:
-                review_months[month] = v
+            review_months[month] = review_months[month] + v
 
         reviews_dates = review_months
 
