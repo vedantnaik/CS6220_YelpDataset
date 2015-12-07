@@ -2,15 +2,16 @@
 
 
 start_year = 2005
-grainedview_start_year = 2012
-end_year_training = 2013
-end_year_ts = 2015
-data_ylim = 20
-filename = "table_amaze_2.csv"
+grainedview_start_year = 2008
+end_year_training = 2012
+end_year_ts = 2014
+data_ylim = 30
+business_id = "fkacCsAiwXYQzdlaQZm0Gg"
+filename = paste("year_all_review_count_",business_id, ".csv", sep="")
 data<-read.csv(filename)
 oridata<-read.csv(filename)
 
-par(mfrow = c(3,3))
+par(mfrow = c(2,1))
 holtdata<-ts(data[,2],start = c(start_year,1), end = c(end_year_training,1),frequency = 12)
 autoarimadata<-ts(data[,2],start = c(start_year,1), end = c(end_year_training,1),frequency = 12)
 oridata <- ts(oridata[,2],start = c(start_year,1),frequency = 12)
@@ -21,9 +22,9 @@ ARIMAfit <- auto.arima((autoarimadata), approximation=FALSE,trace=FALSE)
 autoarima_pred <-  forecast(ARIMAfit, h=12)
 
 
-acf(autoarima_pred$residuals)
-pacf(autoarima_pred$residuals)
-plot(autoarima_pred,type="l",xlim=c(grainedview_start_year,end_year_ts),ylim=c(1,data_ylim),xlab = "Year",ylab = "4bEjOyTaDG24SY5TxsaUNQ")
+#acf(autoarima_pred$residuals)
+#pacf(autoarima_pred$residuals)
+plot(autoarima_pred,type="l",xlim=c(grainedview_start_year,end_year_ts),ylim=c(1,data_ylim),xlab = "Year",ylab = business_id)
 lines(10^(autoarima_pred$pred),col="blue")
 lines(10^(autoarima_pred$pred+2*autoarima_pred$se),col="orange")
 lines(10^(autoarima_pred$pred-2*autoarima_pred$se),col="orange")
@@ -38,10 +39,10 @@ additivefit <- hw(holtdata,seasonal="additive", damped = TRUE)
 multifit <- hw(holtdata,seasonal="multiplicative")
 
 
-acf(additivefit$residuals)
-pacf(additivefit$residuals)
+#acf(additivefit$residuals)
+#pacf(additivefit$residuals)
 
-plot(multifit,ylab="4bEjOyTaDG24SY5TxsaUNQ",
+plot(multifit,ylab=business_id,
      plot.conf=FALSE, fcol="white", xlab="Year", ylim=c(1,data_ylim), xlim=c(grainedview_start_year,end_year_ts))
 lines(fitted(additivefit), col="red", lty=2)
 lines(fitted(multifit), col="green", lty=2)
@@ -51,5 +52,9 @@ lines(oridata, col ="orange")
 print(accuracy(multifit, oridata))
 print(accuracy(additivefit, oridata))
 
-acf(multifit$residuals)
-pacf(multifit$residuals)
+#acf(multifit$residuals)
+#pacf(multifit$residuals)
+
+dev.copy(business_id)
+dev.off()
+
