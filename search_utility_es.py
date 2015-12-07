@@ -22,8 +22,9 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
                                      body={"query": {"match": {"business_id": business_id}}})
     for doc in review_search_result['hits']['hits']:
         popularity_score = (0.7 * doc['_source']['stars'] * doc['_source']['votes']['useful'] +
-                            0.2 * doc['_source']['stars'] * doc['_source']['votes']['cool'] +
-                            0.1 * doc['_source']['stars']) / doc['_source']['stars']
+                            + 0.2 * doc['_source']['stars'] * doc['_source']['votes']['cool']
+                            + 0.1 * doc['_source']['stars']
+                            )/ doc['_source']['stars']
         temp_date_pop_index = (datetime.strptime(doc['_source']['date'], '%Y-%m-%d'), popularity_score)
         if argument == 'M':
             # argument_day = str('%02d' % temp_date.month) + "-" + str(temp_date.year)
@@ -102,5 +103,5 @@ def sample_plot():
     plt.show()
 
 if __name__ == '__main__':
-    search_review_count('M', '4bEjOyTaDG24SY5TxsaUNQ')
+    search_review_count('M', 'zt1TpTuJ6y9n551sw9TaEg')
     # sample_plot()
