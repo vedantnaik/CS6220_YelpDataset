@@ -25,21 +25,21 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
                             + 0.2 * doc['_source']['stars'] * doc['_source']['votes']['cool']
                             + 0.1 * doc['_source']['stars']
                             )/ doc['_source']['stars']
-        temp_date_pop_index = (datetime.strptime(doc['_source']['date'], '%Y-%m-%d'), popularity_score)
+        temp_date_pop_index = datetime.strptime(doc['_source']['date'], '%Y-%m-%d')
         if argument == 'M':
             # argument_day = str('%02d' % temp_date.month) + "-" + str(temp_date.year)
-            argument_day = temp_date_pop_index[0].date()
+            argument_day = temp_date_pop_index.date()
         elif argument == 'Y':
-            argument_day = temp_date_pop_index[0].year
+            argument_day = temp_date_pop_index.year
         elif argument == 'D':
-            argument_day = temp_date_pop_index[0].date()
+            argument_day = temp_date_pop_index.date()
         elif argument == 'W':
-            argument_day = (temp_date_pop_index[0] - timedelta(days=temp_date_pop_index[0].weekday())).date()
+            argument_day = (temp_date_pop_index - timedelta(days=temp_date_pop_index.weekday())).date()
 
         if argument_day in reviews_dates:
-            reviews_dates[argument_day] += temp_date_pop_index[1]
+            reviews_dates[argument_day] = reviews_dates[argument_day] + 1
         else:
-            reviews_dates[argument_day] = temp_date_pop_index[1]
+            reviews_dates[argument_day] = 1
     #ordering
     reviews_dates = OrderedDict(sorted(reviews_dates.items(), key=lambda t: t[0]))
 
@@ -50,7 +50,7 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
         for yr in range(reviews_dates.keys()[0].year, reviews_dates.keys()[len(reviews_dates) - 1].year + 1):
             for k in months:
                 month = str('%02d' % int(k)) + "-" + str(yr)
-                review_months[month] = 0.1
+                review_months[month] = 1
 
 
         for k, v in reviews_dates.iteritems():
@@ -103,5 +103,8 @@ def sample_plot():
     plt.show()
 
 if __name__ == '__main__':
+    search_review_count('M', '4bEjOyTaDG24SY5TxsaUNQ')
+    search_review_count('M', '2e2e7WgqU1BnpxmQL5jbfw')
     search_review_count('M', 'zt1TpTuJ6y9n551sw9TaEg')
+    search_review_count('M', 'sIyHTizqAiGu12XMLX3N3g')
     # sample_plot()

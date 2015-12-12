@@ -1,13 +1,13 @@
 # all - models
 
 
-start_year = 2005
-grainedview_start_year = 2008
-end_year_training = 2012
-end_year_ts = 2014
-data_ylim = 30
-business_id = "fkacCsAiwXYQzdlaQZm0Gg"
-filename = paste("year_all_review_count_",business_id, ".csv", sep="")
+start_year = 2012
+grainedview_start_year = 2012
+end_year_training = 2014
+end_year_ts = 2015
+data_ylim = 400
+business_id = "sIyHTizqAiGu12XMLX3N3g"
+filename = paste("resources/year_all_review_count_",business_id, ".csv", sep="")
 data<-read.csv(filename)
 oridata<-read.csv(filename)
 
@@ -49,12 +49,26 @@ lines(fitted(multifit), col="green", lty=2)
 lines(additivefit$mean, type="o", col="red")
 lines(multifit$mean, col="green")
 lines(oridata, col ="orange")
+
+print(accuracy(autoarima_pred, oridata))
 print(accuracy(multifit, oridata))
 print(accuracy(additivefit, oridata))
 
 #acf(multifit$residuals)
 #pacf(multifit$residuals)
 
-dev.copy(business_id)
-dev.off()
+#dev.copy(business_id)
+#dev.off()
 
+#dev.copy(business_id)
+#dev.off()
+  
+hist(multifit$residuals)
+pacf(multifit$residuals)
+acf(multifit$residuals)
+hist(additivefit$residuals)
+pacf(additivefit$residuals)
+acf(additivefit$residuals)
+hist(autoarima_pred$residuals)
+acf(autoarima_pred$residuals)
+pacf(autoarima_pred$residuals)
