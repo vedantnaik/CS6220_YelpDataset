@@ -4,7 +4,6 @@ from elasticsearch import Elasticsearch
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from collections import OrderedDict
 
 '''
@@ -59,8 +58,8 @@ def search_review_count(argument='M', business_id='4bEjOyTaDG24SY5TxsaUNQ'):
 
         reviews_dates = review_months
 
-    with open('resources/year_all_review_count_'+business_id+'.csv', 'w+') as f:
-        f.write('Date,review_count')
+    with open('resources/year_popularity_index_'+business_id+'.csv', 'w+') as f:
+        f.write('Date,Popularity_index')
         f.write('\n')
         for k, v in reviews_dates.iteritems():
             print (str(k)+','+str(v))
